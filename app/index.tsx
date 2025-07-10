@@ -6,9 +6,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { Task } from '@/utils/types';
 import { FlatList, StyleSheet, View } from 'react-native';
 
-
-export default function HomeScreen() {
-  const featuredTasks: Task[] = [
+export const featuredTasks: Task[] = [
     {
       id: 1,
       title: 'Book flights',
@@ -37,6 +35,7 @@ export default function HomeScreen() {
     }
   ];
 
+export default function HomeScreen() {
   return (
     <ThemedSafeView style={styles.page}>
       <FlatList
