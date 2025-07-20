@@ -34,10 +34,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
     cardOuter: {
+        backgroundColor: '#1C1B1A',
         padding: 8,
-        borderColor: 'silver',
-        borderWidth: 1,
-        borderStyle: 'solid',
         borderRadius: 8,
     }
 });

@@ -1,15 +1,13 @@
 import { ThemedSafeView } from '@/components/ThemedSafeView';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
+import { StyleSheet, View } from 'react-native';
 
-export default function Create() {
+export default function Profile() {
 
   return (
     <ThemedSafeView style={styles.page}>
       <View style={styles.page}>
-        <View style={styles.container}>
-          <TextInput placeholder='Title' style={[styles.text, { fontWeight: 'bold' }]} autoFocus />
-          <TextInput placeholder='Description' multiline style={[styles.text, { minHeight: 120 }]}></TextInput>
-        </View>
+        <ThemedText>Profile</ThemedText>
       </View>
     </ThemedSafeView>
   );

@@ -1,6 +1,6 @@
-import { ThemedText } from '@/components/ThemedText';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
+import { Plus } from 'lucide-react-native';
 import { GestureResponderEvent, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export function CreateFAB() {
@@ -18,7 +18,7 @@ export function CreateFAB() {
             onPressIn={navigate}
         >
             <View style={styles.container}>
-                <ThemedText style={styles.text}>+</ThemedText>
+                <Plus />
             </View>
         </TouchableOpacity>
     );
