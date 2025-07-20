@@ -23,7 +23,7 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ title: 'Home', headerShown: false }} />
         <Stack.Screen name="create" options={{ title: 'New Task', presentation: 'modal' }} />
         <Stack.Screen name="profile" options={{ title: 'Profile' }} />
-        <Stack.Screen name="tasks/[taskId]" options={{ title: 'Task' }} />
+        <Stack.Screen name="tasks/[taskId]" options={{  }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

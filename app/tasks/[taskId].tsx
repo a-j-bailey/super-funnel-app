@@ -1,7 +1,7 @@
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { Task } from '@/utils/types';
-import { useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { featuredTasks } from '../index';
 
@@ -20,6 +20,11 @@ export default function HomeScreen() {
       header={<Header />}
       headerBackgroundColor={{ dark: '#1C1B1A', light: '#F2F0E5' }}
     >
+      <Stack.Screen
+        options={{
+          title: thisTask.title,
+        }}
+      />
       {
         Object.keys(thisTask).map((key) => {
           const k: keyof Task = key as keyof Task
