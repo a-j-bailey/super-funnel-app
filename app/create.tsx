@@ -1,17 +1,25 @@
 import { ThemedSafeView } from '@/components/ThemedSafeView';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { Stack } from 'expo-router';
+import { Button, StyleSheet, TextInput, View } from 'react-native';
 
 export default function Create() {
 
   return (
-    <ThemedSafeView style={styles.page}>
-      <View style={styles.page}>
-        <View style={styles.container}>
-          <TextInput placeholder='Title' style={[styles.text, { fontWeight: 'bold' }]} autoFocus />
-          <TextInput placeholder='Description' multiline style={[styles.text, { minHeight: 120 }]}></TextInput>
+    <>
+      <Stack.Screen
+        options={{
+          headerRight: () => <Button onPress={() => console.log('save')} title='Save' />
+        }}
+      />
+      <ThemedSafeView style={styles.page}>
+        <View style={styles.page}>
+          <View style={styles.container}>
+            <TextInput placeholder='Title' style={[styles.text, { fontWeight: 'bold' }]} autoFocus />
+            <TextInput placeholder='Description' multiline style={[styles.text, { minHeight: 120 }]}></TextInput>
+          </View>
         </View>
-      </View>
-    </ThemedSafeView>
+      </ThemedSafeView>
+    </>
   );
 }
 
@@ -22,7 +30,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: '#1C1B1A',
-    padding: 8,
+    padding: 16,
     borderRadius: 8,
   },
   text: {
