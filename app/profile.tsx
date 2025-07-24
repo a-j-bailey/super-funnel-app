@@ -8,6 +8,9 @@ export default function Profile() {
     <ThemedSafeView style={styles.page}>
       <View style={styles.page}>
         <ThemedText>Profile</ThemedText>
+        <ThemedText>- account info</ThemedText>
+        <ThemedText>- cloud sync status</ThemedText>
+        <ThemedText>- payment / subscription?</ThemedText>
       </View>
     </ThemedSafeView>
   );

@@ -12,11 +12,17 @@ export default function Create() {
           <TextInput placeholder='Description' multiline style={[styles.text, { minHeight: 120 }]}></TextInput>
         </ThemedView>
         <View style={styles.buttonRow}>
-          <TouchableOpacity style={[styles.button]} onPress={() => console.log('breakdown')}>
-            <ThemedText>Breakdown Task</ThemedText>
+          {/* VERSION 1 */}
+          {/* <TouchableOpacity style={[styles.button, styles.primaryButton]} onPress={() => console.log('save')}>
+            <ThemedText>Save</ThemedText>
+          </TouchableOpacity> */}
+
+          {/* VERSION 2 */}
+          <TouchableOpacity style={[styles.button]} onPress={() => console.log('save')}>
+            <ThemedText>Save Without Plan</ThemedText>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.primaryButton]} onPress={() => console.log('save')}>
-            <ThemedText>Save Task</ThemedText>
+          <TouchableOpacity style={[styles.button, styles.primaryButton]} onPress={() => console.log('breakdown')}>
+            <ThemedText>Create Plan</ThemedText>
           </TouchableOpacity>
         </View>
       </View>
@@ -39,7 +45,7 @@ const styles = StyleSheet.create({
     color: '#CECDC3'
   },
   button: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 16
   },
