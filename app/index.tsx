@@ -3,6 +3,7 @@ import { TaskCard } from '@/components/TaskCard';
 import { ThemedSafeView } from '@/components/ThemedSafeView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { Task } from '@/utils/types';
 import { router } from 'expo-router';
 import { UserCircle } from 'lucide-react-native';
@@ -10,10 +11,12 @@ import { SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export const featuredTasks: {
   title: string,
+  description: string,
   data: Task[]
 }[] = [
     {
       title: 'Priority',
+      description: 'These are the items that need your attention first.',
       data: [
         {
           id: 1,
@@ -45,6 +48,7 @@ export const featuredTasks: {
     },
     {
       title: 'Upcoming',
+      description: 'Keep these on the radar or complete them early to stay ahead.',
       data: [
         {
           id: 1,
@@ -77,6 +81,8 @@ export const featuredTasks: {
   ];
 
 export default function HomeScreen() {
+  const iconColor = useThemeColor({}, 'icon')
+
   return (
     <ThemedSafeView style={styles.page}>
       <SectionList
@@ -87,15 +93,16 @@ export default function HomeScreen() {
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
               <ThemedText type="title" style={{ paddingVertical: 8 }}>Have a Few Minutes?</ThemedText>
               <TouchableOpacity style={{ paddingVertical: 8, paddingLeft: 8 }} onPress={() => router.navigate('/profile')}>
-                <UserCircle color={'white'} />
+                <UserCircle color={iconColor} />
               </TouchableOpacity>
             </View>
             <ThemedText type="subtitle" style={{ fontWeight: '200' }}>Log a quick win by completing one of these tasks.</ThemedText>
           </ThemedView>
         }
-        renderSectionHeader={({ section: { title } }) => (
+        renderSectionHeader={({ section: { title, description } }) => (
           <ThemedView>
             <ThemedText type='subtitle'>{title}:</ThemedText>
+            <ThemedText lightColor='#6F6E69' darkColor='#878580' style={{ fontSize: 12 }}>{description}</ThemedText>
           </ThemedView>
         )}
         renderItem={({ item }) => (
@@ -103,8 +110,8 @@ export default function HomeScreen() {
         )}
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
         SectionSeparatorComponent={({ }) => (
-            <View style={{ height: 8 }} />
-          )}
+          <View style={{ height: 8 }} />
+        )}
         contentContainerStyle={styles.containerOuter}
       />
       <CreateFAB />

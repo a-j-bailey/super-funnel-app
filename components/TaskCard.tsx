@@ -10,7 +10,7 @@ export function TaskCard({ task }: { task: Task }) {
     const theme = useColorScheme() ?? 'light';
 
     return (
-        <ThemedView style={styles.cardOuter}>
+        <ThemedView lightColor='#E6E4D9' darkColor='#282726' style={styles.cardOuter}>
             <TouchableOpacity
                 style={styles.heading}
                 onPress={() => { router.navigate(`/tasks/${task.id}`) }}>
@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
     cardOuter: {
-        backgroundColor: '#1C1B1A',
         padding: 8,
         borderRadius: 8,
     }

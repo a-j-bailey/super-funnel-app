@@ -1,9 +1,13 @@
+import { useThemeColor } from '@/hooks/useThemeColor';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import { Plus } from 'lucide-react-native';
 import { GestureResponderEvent, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export function CreateFAB() {
+    const bgColor = useThemeColor({}, 'tint')
+    const iconColor = useThemeColor({}, 'background')
+
     const navigate = (ev: GestureResponderEvent) => {
         if (process.env.EXPO_OS === 'ios') {
             // Add a soft haptic feedback when pressing down on the tabs.
@@ -12,13 +16,13 @@ export function CreateFAB() {
 
         router.navigate('/create')
     }
-    
+
     return (
         <TouchableOpacity
             onPressIn={navigate}
         >
-            <View style={styles.container}>
-                <Plus />
+            <View style={[styles.container, { backgroundColor: bgColor }]}>
+                <Plus color={iconColor} />
             </View>
         </TouchableOpacity>
     );

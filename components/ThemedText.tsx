@@ -36,8 +36,8 @@ export function ThemedText({
 
 const styles = StyleSheet.create({
   default: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 14,
+    lineHeight: 16,
   },
   defaultSemiBold: {
     fontSize: 16,
