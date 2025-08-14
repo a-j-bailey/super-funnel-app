@@ -23,9 +23,9 @@ export default function RootLayout() {
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="index" options={{ title: 'Home', headerShown: false }} />
-          <Stack.Screen name="create" options={{ title: 'New Task', presentation: 'modal' }} />
+          <Stack.Screen name="create" options={{ title: 'New Task', presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="profile" options={{ title: 'Profile' }} />
-          <Stack.Screen name="tasks/[taskId]" options={{}} />
+          <Stack.Screen name="[taskId]" options={{ presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />

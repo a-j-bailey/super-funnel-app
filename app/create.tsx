@@ -1,29 +1,61 @@
 import { ThemedSafeView } from '@/components/ThemedSafeView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function Create() {
+  const textColor = useThemeColor({}, 'text')
+  const buttonColor = useThemeColor({}, 'tint')
+  const bgColor = useThemeColor({}, 'background')
+  const disabledButtonColor = useThemeColor({}, 'icon')
+
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [saveable, setSaveable] = useState(false)
+  const [dueDate, setDueDate] = useState(undefined)
+
+  useEffect(() => {
+    setSaveable(title !== '')
+  }, [title])
+
   return (
     <ThemedSafeView style={styles.page}>
       <View style={styles.page}>
         <ThemedView lightColor='#F2F0E5' darkColor='#1C1B1A' style={styles.container}>
-          <TextInput placeholder='Title' style={[styles.text, { fontWeight: 'bold' }]} autoFocus />
-          <TextInput placeholder='Description' multiline style={[styles.text, { minHeight: 120 }]}></TextInput>
+          <TextInput
+            placeholder='Title'
+            style={[styles.text, { fontWeight: 'bold', color: textColor }]}
+            value={title}
+            onChangeText={setTitle}
+            autoFocus
+          />
+          <TextInput
+            placeholder='Description'
+            style={[styles.text, { minHeight: 120, color: textColor }]}
+            value={description}
+            onChangeText={setDescription}
+            multiline
+          />
         </ThemedView>
         <View style={styles.buttonRow}>
           {/* VERSION 1 */}
-          {/* <TouchableOpacity style={[styles.button, styles.primaryButton]} onPress={() => console.log('save')}>
-            <ThemedText>Save</ThemedText>
-          </TouchableOpacity> */}
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: saveable ? buttonColor : disabledButtonColor }]}
+            onPress={() => console.log('save')}
+            disabled={!saveable}
+          >
+            <ThemedText style={{ color: bgColor }}>Save</ThemedText>
+          </TouchableOpacity>
 
           {/* VERSION 2 */}
-          <TouchableOpacity style={[styles.button]} onPress={() => console.log('save')}>
+          {/* <TouchableOpacity style={[styles.button]} onPress={() => console.log('save')}>
             <ThemedText>Save Without Plan</ThemedText>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, styles.primaryButton]} onPress={() => console.log('breakdown')}>
-            <ThemedText>Create Plan</ThemedText>
-          </TouchableOpacity>
+            <ThemedText>Save</ThemedText>
+          </TouchableOpacity> */}
         </View>
       </View>
     </ThemedSafeView>
