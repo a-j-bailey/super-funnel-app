@@ -3,6 +3,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { useTasks } from '@/providers/TaskProvider';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -27,7 +28,7 @@ export default function Create() {
     createTask({
       title: title,
       description: description,
-    })
+    }).then(() => router.back())
   }
 
   return (
