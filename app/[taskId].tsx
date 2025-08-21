@@ -191,12 +191,12 @@ export default function TaskScreen() {
             {thisTask?.description}
           </ThemedText>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ gap: 4 }}>
+            {thisTask?.dueDate && <View style={{ gap: 4 }}>
               <ThemedText colorName='textSecondary' type='small'>Due:</ThemedText>
               <ThemedText>
                 {thisTask?.dueDate?.toLocaleDateString()}
               </ThemedText>
-            </View>
+            </View>}
             {thisTask?.completed && <View style={{ gap: 4 }}>
               <ThemedText colorName='textSecondary' type='small' style={{ textAlign: 'right' }}>Completed:</ThemedText>
               <ThemedText>
