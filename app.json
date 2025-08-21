@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "super-funnel-app",
-    "slug": "super-funnel-app",
+    "name": "magic-backlog",
+    "slug": "magic-backlog",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
