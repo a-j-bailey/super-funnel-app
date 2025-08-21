@@ -2,6 +2,7 @@ import { ThemedSafeView } from '@/components/ThemedSafeView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { useTasks } from '@/providers/TaskProvider';
 import { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -16,9 +17,18 @@ export default function Create() {
   const [saveable, setSaveable] = useState(false)
   const [dueDate, setDueDate] = useState(undefined)
 
+  const { createTask } = useTasks()
+
   useEffect(() => {
     setSaveable(title !== '')
   }, [title])
+
+  function handleSave() {
+    createTask({
+      title: title,
+      description: description,
+    })
+  }
 
   return (
     <ThemedSafeView style={styles.page}>
@@ -43,7 +53,7 @@ export default function Create() {
           {/* VERSION 1 */}
           <TouchableOpacity
             style={[styles.button, { backgroundColor: saveable ? buttonColor : disabledButtonColor }]}
-            onPress={() => console.log('save')}
+            onPress={handleSave}
             disabled={!saveable}
           >
             <ThemedText style={{ color: bgColor }}>Save</ThemedText>
