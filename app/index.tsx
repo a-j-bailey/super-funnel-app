@@ -4,31 +4,49 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { useTasks } from '@/providers/TaskProvider';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { router } from 'expo-router';
+import { ListTodo, UserCircle } from 'lucide-react-native';
+import { useState } from 'react';
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const iconColor = useThemeColor({}, 'icon')
-  const { tasks } = useTasks();
+  const { tasks, fetchTasks } = useTasks();
+  const [refreshing, setRefreshing] = useState(false)
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    fetchTasks()
+    setRefreshing(false);
+  };
 
   return (
     <ThemedView style={[styles.page, { paddingTop: insets.top }]}>
       <FlatList
         data={tasks}
         keyExtractor={item => String(item.id)}
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
         renderItem={({ item, index }) => <TaskCard key={item.id} task={item} index={index} />}
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
+        ListEmptyComponent={() => (
+          <View style={{ paddingVertical: 96, alignItems: 'center' }}>
+            <ListTodo color={iconColor} size={64} />
+            <ThemedText type="subtitle" style={{ fontWeight: '200' }}>Create your first task to begin.</ThemedText>
+          </View>
+        )}
         ListHeaderComponent={() => (
           <View style={{ paddingBottom: 8 }}>
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
               <ThemedText type="title" style={{ paddingVertical: 8, flex: 1 }}>Have a Minute?</ThemedText>
               {/* <TouchableOpacity style={{ paddingVertical: 8, paddingLeft: 8 }} onPress={() => router.navigate('/profile')}>
                 <Search color={iconColor} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity style={{ paddingVertical: 8, paddingLeft: 8 }} onPress={() => router.navigate('/profile')}>
                 <UserCircle color={iconColor} />
-              </TouchableOpacity> */}
+              </TouchableOpacity>
             </View>
             <ThemedText type="subtitle" style={{ fontWeight: '200' }}>Log a quick win by completing one of these tasks.</ThemedText>
           </View>
