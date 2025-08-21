@@ -121,9 +121,9 @@ export default function TaskScreen() {
     if (thisTask?.priority < lowerThird) {
       return <Flag text={'Highest Priority'} priority={1} />
     } else if (thisTask?.priority < middleThird) {
-      return <Flag text={'Priority'} priority={2} />
+      return <Flag text={'Medium Priority'} priority={2} />
     } else {
-      return <Flag text={'Lowest Priority'} priority={3} />
+      return <Flag text={'Low Priority'} priority={3} />
     }
   }
 
@@ -158,7 +158,10 @@ export default function TaskScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView
+      style={styles.container}
+      colorName='backgroundSecondary'
+    >
       <Stack.Screen
         options={{
           title: thisTask?.title || '',
@@ -168,7 +171,7 @@ export default function TaskScreen() {
         ref={scrollRef}
         scrollEventThrottle={16}
         scrollIndicatorInsets={{ bottom }}
-        contentContainerStyle={{ paddingBottom: bottom }}>
+        contentContainerStyle={{ paddingBottom: bottom, flex: 1 }}>
         <Animated.View
           style={[
             styles.header,
@@ -176,12 +179,14 @@ export default function TaskScreen() {
             headerAnimatedStyle,
           ]}>
           <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 8 }}>
-            <DueDateFlag />
-            <PriorityFlag />
+            {thisTask?.completed
+              ? <Flag text="Completed" priority={3} />
+              : <><DueDateFlag />
+                <PriorityFlag /></>}
           </View>
           <ThemedText type='title'>{thisTask?.title}</ThemedText>
         </Animated.View>
-        <ThemedView style={styles.content}>
+        <ThemedView style={[styles.content, { flex: 1, height: 'auto' }]}>
           <ThemedText>
             {thisTask?.description}
           </ThemedText>
@@ -192,16 +197,16 @@ export default function TaskScreen() {
                 {thisTask?.dueDate?.toLocaleDateString()}
               </ThemedText>
             </View>
-            <View style={{ gap: 4 }}>
-              <ThemedText colorName='textSecondary' type='small' style={{ textAlign: 'right' }}>Created:</ThemedText>
+            {thisTask?.completed && <View style={{ gap: 4 }}>
+              <ThemedText colorName='textSecondary' type='small' style={{ textAlign: 'right' }}>Completed:</ThemedText>
               <ThemedText>
-                {thisTask?.dueDate?.toLocaleDateString()}
+                {thisTask?.completedDate?.toLocaleDateString()}
               </ThemedText>
-            </View>
+            </View>}
           </View>
         </ThemedView>
       </Animated.ScrollView>
-      <CompleteFAB />
+      {!thisTask?.completed && <CompleteFAB taskId={thisTask?.id || 0} />}
     </ThemedView>
   );
 }
@@ -213,7 +218,8 @@ const styles = StyleSheet.create({
   header: {
     height: HEADER_HEIGHT,
     overflow: 'hidden',
-    padding: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     flexDirection: 'column',
     justifyContent: 'space-between'
   },
@@ -223,6 +229,8 @@ const styles = StyleSheet.create({
     paddingVertical: 32,
     gap: 16,
     overflow: 'hidden',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
   },
   page: {
     flex: 1,
