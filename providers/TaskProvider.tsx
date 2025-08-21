@@ -1,48 +1,9 @@
 // TODO: Set Min/Max once and store in State.
 
+import { supabase } from '@/utils/supabase';
 import { Task } from '@/utils/types';
 import React, { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
-
-// Mock async API functions
-const fakeAPI = {
-    fetchTasks: async () => {
-        // Simulate API call
-        return [
-            { id: 1, priority: 1, title: 'Book flights', description: 'Find the best airline tickets for upcoming vacation and confirm bookings.', dueDate: new Date('2025-08-01') },
-            { id: 7, priority: 1, title: 'Pay utility bills', description: 'Settle electricity, water, and internet bills online.', dueDate: new Date('2025-08-15') },
-            { id: 12, priority: 1, title: 'Renew driver’s license', description: 'Gather documents and complete license renewal online or in person.', dueDate: new Date('2025-08-30') },
-            { id: 18, priority: 2, title: 'Print boating permit', description: 'Download, print, and store the updated boating license on board.' },
-            { id: 13, priority: 2, title: 'Clean coffee machine', description: 'Run descaling cycle and wipe down coffee maker for maintenance.' },
-            { id: 2, priority: 2, title: 'Just do it', description: 'Motivate yourself to start that lingering task you have been putting off.' },
-            { id: 5, priority: 3, title: 'Schedule dentist appointment', description: 'Contact dental clinic and arrange a check-up.', dueDate: new Date('2025-09-10') },
-            { id: 9, priority: 3, title: 'Organize desk', description: 'Declutter and arrange workstation items for improved focus.' },
-            { id: 16, priority: 3, title: 'Upgrade home Wi-Fi router', description: 'Replace old router with a faster model for better connectivity.', dueDate: new Date('2025-09-15') },
-            { id: 19, priority: 4, title: 'Test new JavaScript feature', description: 'Experiment with and evaluate performance of a new JS API or syntax.' },
-            { id: 22, priority: 4, title: 'Fix leaking faucet', description: 'Purchase parts and repair dripping kitchen or bathroom faucet.', dueDate: new Date('2025-09-02') },
-            { id: 6, priority: 5, title: 'Plan weekend biking route', description: 'Map out a scenic cycling path and prepare supplies for the ride.' },
-            { id: 3, priority: 5, title: 'Make dinner', description: 'Prepare a healthy home-cooked meal using available ingredients.' },
-            { id: 15, priority: 6, title: 'Prepare picnic for beach', description: 'Plan menu, pack food, and gather supplies for a beach trip.' },
-            { id: 21, priority: 6, title: 'Plan coffee tasting event', description: 'Organize coffee varieties, tasting cards, and invitations for the event.' },
-            { id: 11, priority: 7, title: 'Backup laptop files', description: 'Copy all important documents to an external drive or cloud.', dueDate: new Date('2025-08-25') },
-            { id: 4, priority: 7, title: 'Order new tires', description: 'Purchase replacement tires for the car and arrange installation.', dueDate: new Date('2025-08-01') },
-            { id: 14, priority: 8, title: 'Review investment portfolio', description: 'Analyze financial performance and adjust allocations if needed.', dueDate: new Date('2025-09-05') },
-            { id: 8, priority: 8, title: 'Oil change for car', description: 'Schedule and complete an oil change to maintain vehicle health.', dueDate: new Date('2025-08-20') },
-            { id: 23, priority: 9, title: 'Pack for Rhode Island sailing trip', description: 'Prepare clothing, boating gear, and safety equipment for sailing.', dueDate: new Date('2025-08-28') },
-            { id: 20, priority: 9, title: 'Refill propane tank', description: 'Exchange or refill propane for grill or camping equipment.', dueDate: new Date('2025-08-22') },
-            { id: 10, priority: 10, title: 'Call Mom', description: 'Catch up with Mom and check in on how she is doing.' },
-            { id: 17, priority: 10, title: 'Buy birthday gift for Sarah', description: 'Choose and purchase a thoughtful gift, wrap it, and write a card.', dueDate: new Date('2025-08-18') },
-        ];
-
-    },
-    getTaskById: async (id: any) => {
-        const tasks = await fakeAPI.fetchTasks();
-        return tasks.find((task) => task.id === id);
-    },
-    updateTask: async (updatedTask: any) => {
-        // Simulate updating in DB
-        return updatedTask;
-    },
-};
+import { useAuth } from './AuthProvider';
 
 // Initial state
 const initialState = {
@@ -89,6 +50,7 @@ type TaskContextType = {
     error: Error,
     fetchTasks: () => void
     fetchTaskById: (id: any) => Promise<any>
+    createTask: (task: Omit<Task, 'id' | 'completed' | 'priority'>) => Promise<any>
     markTaskCompleted: (id: any) => Promise<any>
     getMinMaxPriority: () => { minPriority: number, maxPriority: number }
 }
@@ -98,13 +60,25 @@ const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
 // Provider Component
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
+    const { user, session } = useAuth()
     const [state, dispatch] = useReducer(taskReducer, initialState);
+
+    // Fetch tasks if user or session changes.
+    useEffect(() => {
+        console.log('Updating Tasks...')
+        fetchTasks()
+    }, [user, session])
 
     // Fetch all tasks
     const fetchTasks = async () => {
         dispatch({ type: ACTIONS.FETCH_START });
         try {
-            const tasks = await fakeAPI.fetchTasks();
+            let { data: tasks, error } = await supabase
+                .from('tasks')
+                .select('*')
+                .eq('completed', false)
+                .order('priority', { ascending: true })
+
             dispatch({ type: ACTIONS.FETCH_SUCCESS, payload: tasks });
         } catch (error) {
             if (error instanceof Error) {
@@ -117,7 +91,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const fetchTaskById = async (id: any) => {
         try {
             const task = state.tasks.filter((task: any) => task.id == id)[0]
-            // const task = await fakeAPI.getTaskById(id);
             return task;
         } catch (error) {
             console.error('Error fetching task by ID:', error);
@@ -126,12 +99,45 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     };
 
     // Mark task as completed
+    const createTask = async (task: Omit<Task, 'id' | 'completed' | 'priority'>) => {
+        try {
+            // TODO: Swap this for API call.
+            const { data, error } = await supabase
+                .from('tasks')
+                .insert([
+                    {
+                        title: task.title,
+                        description: task.description,
+                        priority: Math.floor(Math.random() * 10) + 1
+                    },
+                ])
+                .select()
+
+            if (data) {
+                dispatch({ type: ACTIONS.ADD_TASK, payload: data })
+            } else {
+                console.log(data)
+                console.error(error)
+            }
+        } catch (error) {
+            console.error('Error marking task completed:', error);
+        }
+    };
+
+
+    // Mark task as completed
     const markTaskCompleted = async (id: any) => {
         try {
-            const task = await fetchTaskById(id);
+            // TODO: This needs to update the DB.
+            const task = state.tasks.filter((task: Task) => task.id == id)[0];
             if (!task) throw new Error('Task not found');
-            const updatedTask = { ...task, completed: true };
-            await fakeAPI.updateTask(updatedTask);
+
+            const updatedTask = {
+                ...task,
+                completed: true,
+                completedDate: new Date()
+            };
+            // Dispatch the updated task to update the state
             dispatch({ type: ACTIONS.UPDATE_TASK, payload: updatedTask });
         } catch (error) {
             console.error('Error marking task completed:', error);
@@ -166,6 +172,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 error: state.error,
                 fetchTasks,
                 fetchTaskById,
+                createTask,
                 markTaskCompleted,
                 getMinMaxPriority
             }}
