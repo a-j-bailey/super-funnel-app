@@ -114,7 +114,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
                 .select()
 
             if (data) {
-                dispatch({ type: ACTIONS.ADD_TASK, payload: data })
+                console.log(data[0])
+                dispatch({ type: ACTIONS.ADD_TASK, payload: data[0] })
             } else {
                 console.log(data)
                 console.error(error)
@@ -128,17 +129,19 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     // Mark task as completed
     const markTaskCompleted = async (id: any) => {
         try {
-            // TODO: This needs to update the DB.
-            const task = state.tasks.filter((task: Task) => task.id == id)[0];
-            if (!task) throw new Error('Task not found');
+            const { data, error } = await supabase
+                .from('tasks')
+                .update({
+                    completed: true,
+                    completed_date: new Date()
+                })
+                .eq('id', id)
+                .select()
+                .single()
 
-            const updatedTask = {
-                ...task,
-                completed: true,
-                completedDate: new Date()
-            };
             // Dispatch the updated task to update the state
-            dispatch({ type: ACTIONS.UPDATE_TASK, payload: updatedTask });
+            if (error) throw error
+            dispatch({ type: ACTIONS.UPDATE_TASK, payload: data });
         } catch (error) {
             console.error('Error marking task completed:', error);
         }
