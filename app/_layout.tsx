@@ -8,6 +8,12 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { TaskProvider } from '@/providers/TaskProvider';
 
+import { vexo } from 'vexo-analytics';
+
+if (!__DEV__) {
+  vexo('32ff6046-e477-41d2-a957-83f75b3e2bd4');
+}
+
 export default function RootLayout() {
   const tintColorLight = '#5E409D';
   const tintColorDark = '#8B7EC8';
