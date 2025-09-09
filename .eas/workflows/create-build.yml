@@ -1,0 +1,61 @@
+name: create-build
+defaults:
+  tools:
+    bun: 1.2.20
+    node: 20.19.4
+jobs:
+  launch-ios:
+    type: build
+    params:
+      platform: ios
+      profile: production
+    env:
+      COREPACK_DEFAULT_TO_LATEST: '0'
+      COREPACK_ENABLE_AUTO_PIN: '0'
+      COREPACK_ENABLE_STRICT: '0'
+      COREPACK_INTEGRITY_KEYS: '0'
+      EAS_NO_VCS: '1'
+      RCT_USE_PREBUILT_RNCORE: '0'
+      RCT_USE_RN_DEP: '0'
+    steps:
+      - name: 🏗️ Prepare project
+        uses: eas/checkout
+      - name: 🏗️ Prepare launch
+        run: bun add --global eas-cli pod-install @expo/launching@0.0.0-20250908-aa923438
+      - name: 📦 Install node dependencies
+        run: launching node:install
+      - name: ⚙️ Configure project
+        run: launching expo:manifest "{\"name\":\"Magic Backlog\",\"slug\":\"magic-backlog\",\"owner\":\"magicmirrorcreative\",\"ios\":{\"bundleIdentifier\":\"com.magicmirrorcreative.magicbacklog\",\"infoPlist\":{\"ITSAppUsesNonExemptEncryption\":false}},\"extra\":{\"eas\":{\"projectId\":\"d6536322-edca-475f-b9ec-0602a32eb96f\"}}}"
+      - name: 📱 Prebuild project
+        run: launching expo:prebuild --platform ios --apple-team-id "Q8KLW35SFA"
+      - name: ⚙️ Configure xcode project
+        run: launching xcode:configure
+      - name: 🔍 Resolve iOS build
+        uses: eas/resolve_build_config
+      - name: ⚙️ Configure EAS Updates
+        uses: eas/configure_eas_update
+        with:
+          throw_if_not_configured: false
+      - name: 📦 Bundle app
+        run: launching expo:export-eager --platform ios
+      - name: ⚙️ Configure iOS credentials
+        uses: eas/configure_ios_credentials
+      - name: ⚙️ Configure iOS build version
+        uses: eas/configure_ios_version
+      - name: ⚙️ Configure iOS build steps
+        uses: eas/generate_gymfile_from_template
+        with:
+          credentials: ${ eas.job.secrets.buildCredentials }
+      - name: 📦 Install iOS dependencies
+        run: pod-install
+      - name: 📱 Build iOS app
+        uses: eas/run_fastlane
+      - name: ♻️ Upload iOS app
+        uses: eas/find_and_upload_build_artifacts
+      - name: 🚀 Submit iOS app
+        run: launching eas:ios-submit --app-bundle-id "${ eas.metadata.appIdentifier }" --app-id "6752278004" --app-name "${ eas.metadata.appName }" --build-id "${ eas.env.EAS_BUILD_ID }" --build-number "${ eas.metadata.appBuildVersion }" --submit-profile "${ eas.env.EAS_BUILD_PROFILE }"
+      - name: ♻️ Upload iOS submission
+        uses: eas/create_submission_entity
+        with:
+          build_id: ${ eas.env.EAS_BUILD_ID }
+          asc_app_identifier: '6752278004'
