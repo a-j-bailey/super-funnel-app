@@ -81,6 +81,7 @@ export default function Profile() {
               style={[styles.text, { fontWeight: 'bold', color: textColor }]}
               value={email}
               onChangeText={setEmail}
+              readOnly={!isAnonymous}
             />
           </ThemedView>
         }
@@ -88,13 +89,13 @@ export default function Profile() {
           {message}
         </ThemedText>}
         <View style={styles.buttonRow}>
-          <TouchableOpacity
+          {isAnonymous && <TouchableOpacity
             style={[styles.button, { backgroundColor: saveable ? buttonColor : disabledButtonColor }]}
             onPress={createAccount}
             disabled={!saveable}
           >
             <ThemedText type='small' style={{ color: bgColor }}>{showOtp ? 'Verify Email' : 'Create or Sign In'}</ThemedText>
-          </TouchableOpacity>
+          </TouchableOpacity>}
         </View>
         <ThemedView colorName='backgroundSecondary' style={{ height: 1 }} />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>

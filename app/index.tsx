@@ -5,7 +5,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { useTasks } from '@/providers/TaskProvider';
 import { router } from 'expo-router';
-import { ListTodo, UserCircle } from 'lucide-react-native';
+import { ListTodo, UserCheck, UserCircle } from 'lucide-react-native';
 import { useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -33,8 +33,15 @@ export default function HomeScreen() {
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
         ListEmptyComponent={() => (
           <View style={{ paddingVertical: 96, alignItems: 'center' }}>
-            <ListTodo color={iconColor} size={64} />
-            <ThemedText type="subtitle" style={{ fontWeight: '200' }}>Create your first task to begin.</ThemedText>
+            <TouchableOpacity style={styles.emptyPrompt} onPress={() => router.navigate('/create')}>
+              <ListTodo color={iconColor} size={32} />
+              <ThemedText type="subtitle" style={{ fontWeight: '200' }}>Create your first task</ThemedText>
+            </TouchableOpacity>
+            <ThemedText type="subtitle" style={{ fontWeight: '200' }}>or</ThemedText>
+            <TouchableOpacity style={styles.emptyPrompt}  onPress={() => router.navigate('/profile')}>
+              <UserCheck color={iconColor} size={32} />
+              <ThemedText type="subtitle" style={{ fontWeight: '200' }}>Log in to your account</ThemedText>
+            </TouchableOpacity>
           </View>
         )}
         ListHeaderComponent={() => (
@@ -68,6 +75,10 @@ const styles = StyleSheet.create({
   },
   page: {
     flex: 1,
-    // paddingHorizontal: 16,
+  },
+  emptyPrompt: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
   }
 });
